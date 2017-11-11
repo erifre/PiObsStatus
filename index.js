@@ -1,12 +1,16 @@
+var config = require('./config');
+
 const OBSWebSocket = require('obs-websocket-js');
 const obs = new OBSWebSocket();
 
-var config = require('./config');
-
 let connStatus = false,
-    connRetry = 0;
+    connRetry = 0,
+    streamStatus = false,
+    ledMode = -1;
 
-let streamStatus = false;
+var Gpio = require('onoff').Gpio,
+    led = new Gpio(config.led.pin, 'out'),
+    iv = -1;
 
 obs.on('AuthenticationSuccess', function(data) {
 	console.log("Connection and authenication successful");
@@ -42,7 +46,51 @@ setInterval(function() {
 			console.log("Connecting in: "+(connRetry+1)+" seconds.");
 		}
 	}
-	else {
-		console.log("Connection: "+connStatus+", Streaming: "+streamStatus);
-	}
+
+	controlLed();
 }, 1000);
+
+function controlLed() {
+	let newLedMode = ledMode;
+
+	let iv2;
+
+	// Connected and streaming
+	if (connStatus && streamStatus) {
+		newLedMode = 2;
+	}
+
+	// Connected, not streaming
+	else if (connStatus && !streamStatus) {
+		newLedMode = 1;
+	}
+
+	// Running, not connected
+	else {
+		newLedMode = 0;
+	}
+
+
+	if (ledMode != newLedMode) {
+		clearInterval(iv);
+
+		ledMode = newLedMode;
+
+		if (ledMode == 0) {
+			led.writeSync(1);
+			iv2 = -1;
+		}
+		else if (ledMode == 1) {
+			iv2 = setInterval(function() {
+				led.writeSync(led.readSync() === 0 ? 1 : 0)
+			}, 1500);
+		}
+		else if (ledMode == 2) {
+			iv2 = setInterval(function() {
+				led.writeSync(led.readSync() === 0 ? 1 : 0)
+			}, 300);
+		}
+
+		iv = iv2;
+	}
+}

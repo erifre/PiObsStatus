@@ -4,4 +4,6 @@ config.host = 'localhost';
 config.port = 4444;
 config.password = "";
 
+config.led.pin = 17;
+
 module.exports = config;
