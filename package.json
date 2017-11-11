@@ -1,0 +1,15 @@
+{
+  "name": "obs-pi-led",
+  "version": "0.0.1",
+  "description": "Listen to a OBS Websocket and turn on a LED when streaming",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "obs-websocket-js": "^1.0.0",
+    "onoff": "^1.1.8"
+  },
+  "author": "Erik Fredriksen <erik@fredriksen.se>",
+  "license": "ISC"
+}
