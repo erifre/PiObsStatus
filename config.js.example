@@ -1,0 +1,7 @@
+var config = {}
+
+config.host = 'localhost';
+config.port = 4444;
+config.password = "";
+
+module.exports = config;

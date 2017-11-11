@@ -1,9 +1,7 @@
 const OBSWebSocket = require('obs-websocket-js');
 const obs = new OBSWebSocket();
 
-let host = 'localhost';
-let port = 4444;
-let pass = '';
+var config = require('./config');
 
 let connStatus = false,
     connRetry = 0;
@@ -34,8 +32,8 @@ obs.on('StreamStopped', function(data) {
 setInterval(function() {
 	if (!connStatus && connRetry > -1) {
 		if (connRetry-- == 0) {
-			console.log("Connecting to: "+host+":"+port);
-			obs.connect({ address: host+':'+port, password: pass })
+			console.log("Connecting to: "+config.host+":"+config.port);
+			obs.connect({ address: config.host+':'+config.port, password: config.password })
 			.catch(err => {
 				// Ignore
 			});
