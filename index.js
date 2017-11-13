@@ -9,7 +9,8 @@ let connStatus = false,
     ledMode = -1;
 
 var Gpio = require('onoff').Gpio,
-    led = new Gpio(config.led.pin, 'out'),
+    ledGreen = new Gpio(config.led.green.pin, 'out'),
+    ledRed = new Gpio(config.led.red.pin, 'out'),
     iv = -1;
 
 obs.on('AuthenticationSuccess', function(data) {
@@ -77,18 +78,21 @@ function controlLed() {
 		ledMode = newLedMode;
 
 		if (ledMode == 0) {
-			led.writeSync(1);
+			ledGreen.writeSync(0);
+			ledRed.writeSync(1);
 			iv2 = -1;
 		}
 		else if (ledMode == 1) {
 			iv2 = setInterval(function() {
-				led.writeSync(led.readSync() === 0 ? 1 : 0)
+				ledRed.writeSync(ledRed.readSync() === 0 ? 1 : 0)
 			}, 1500);
+			ledGreen.writeSync(0);
 		}
 		else if (ledMode == 2) {
 			iv2 = setInterval(function() {
-				led.writeSync(led.readSync() === 0 ? 1 : 0)
+				ledGreen.writeSync(ledGreen.readSync() === 0 ? 1 : 0)
 			}, 300);
+			ledRed.writeSync(0);
 		}
 
 		iv = iv2;
