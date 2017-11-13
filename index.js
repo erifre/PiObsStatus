@@ -1,24 +1,23 @@
-var config = require('./config');
+let config = require('./config');
 
 const OBSWebSocket = require('obs-websocket-js');
 const obs = new OBSWebSocket();
+const Gpio = require('onoff').Gpio;
 
 let connStatus = false,
     connRetry = 0,
-    streamStatus = false,
-    ledMode = -1;
+    streamStatus = false;
 
-var Gpio = require('onoff').Gpio,
-    ledGreen = new Gpio(config.led.green.pin, 'out'),
+let ledGreen = new Gpio(config.led.green.pin, 'out'),
     ledRed = new Gpio(config.led.red.pin, 'out'),
+    ledMode = -1;
     iv = -1;
 
 obs.on('AuthenticationSuccess', function(data) {
-	console.log("Connection and authenication successful");
+	console.log("Connected and authenticated");
 	connStatus = true;
 	connRetry = -1;
 });
-
 
 obs.on('ConnectionClosed', function(data) {
 	console.log("Connection closed");
@@ -40,7 +39,7 @@ setInterval(function() {
 			console.log("Connecting to: "+config.host+":"+config.port);
 			obs.connect({ address: config.host+':'+config.port, password: config.password })
 			.catch(err => {
-				// Ignore
+				// Ignore errors. Just hide them.
 			});
 		}
 		else if (((connRetry+1) % 5) == 0) {
@@ -53,8 +52,6 @@ setInterval(function() {
 
 function controlLed() {
 	let newLedMode = ledMode;
-
-	let iv2;
 
 	// Connected and streaming
 	if (connStatus && streamStatus) {
@@ -80,21 +77,19 @@ function controlLed() {
 		if (ledMode == 0) {
 			ledGreen.writeSync(0);
 			ledRed.writeSync(1);
-			iv2 = -1;
+			iv = -1;
 		}
 		else if (ledMode == 1) {
-			iv2 = setInterval(function() {
+			iv = setInterval(function() {
 				ledRed.writeSync(ledRed.readSync() === 0 ? 1 : 0)
 			}, 1500);
 			ledGreen.writeSync(0);
 		}
 		else if (ledMode == 2) {
-			iv2 = setInterval(function() {
+			iv = setInterval(function() {
 				ledGreen.writeSync(ledGreen.readSync() === 0 ? 1 : 0)
 			}, 300);
 			ledRed.writeSync(0);
 		}
-
-		iv = iv2;
 	}
 }
