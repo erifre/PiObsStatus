@@ -1,7 +1,7 @@
 {
-  "name": "obs-pi-led",
+  "name": "PiObsStatus",
   "version": "0.0.1",
-  "description": "Listen to a OBS Websocket and turn on a LED when streaming",
+  "description": "Connect to OBS Studio via a websocket and show streaming status via LED lights.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
