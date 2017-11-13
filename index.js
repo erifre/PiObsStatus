@@ -1,15 +1,15 @@
-let config = require('./config');
+const config = require('./config');
 
 const OBSWebSocket = require('obs-websocket-js');
 const obs = new OBSWebSocket();
 const Gpio = require('onoff').Gpio;
 
+const ledGreen = new Gpio(config.led.green.pin, 'out'),
+      ledRed = new Gpio(config.led.red.pin, 'out');
+
 let connStatus = false,
     connRetry = 0,
-    streamStatus = false;
-
-let ledGreen = new Gpio(config.led.green.pin, 'out'),
-    ledRed = new Gpio(config.led.red.pin, 'out'),
+    streamStatus = false,
     ledMode = -1;
     iv = -1;
 
