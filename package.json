@@ -11,5 +11,10 @@
     "onoff": "^1.1.8"
   },
   "author": "Erik Fredriksen <erik@fredriksen.se>",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/erifre/PiObsStatus.git",
+    "private": true
+  }
 }
