@@ -82,13 +82,13 @@ function controlLed() {
     else if (ledMode == 1) {
       iv = setInterval(function() {
         ledRed.writeSync(ledRed.readSync() === 0 ? 1 : 0)
-      }, 1500);
+      }, 1000);
       ledGreen.writeSync(0);
     }
     else if (ledMode == 2) {
       iv = setInterval(function() {
         ledGreen.writeSync(ledGreen.readSync() === 0 ? 1 : 0)
-      }, 300);
+      }, 1000);
       ledRed.writeSync(0);
     }
   }
